@@ -1,0 +1,127 @@
+﻿@using Hospital.ViewModels
+@model RegisterViewModel
+
+
+@{
+	ViewData["Title"] = "Register";
+	Layout = "~/Views/Shared/_AuthLayout.cshtml";
+}
+@* <link href="~/css/AuthStyleSheet.css" rel="stylesheet" /> *@
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+<div class="main-agileinfo">
+	<div class="agileits-top">
+		<div asp-validation-summary="All" style="color:red" class="text-danger"></div>
+
+		
+		<form asp-action="Register" asp-controller="Account" method="post">
+			<input type="text" asp-for="FName" placeholder="First Name" required="">
+			<span asp-validation-for="FName" style="color:red"></span>
+			<br />
+			
+
+			<input type="text" asp-for="LName" placeholder="Last Name" required="">
+			<span asp-validation-for="LName" style="color:red"></span>
+			<br />
+
+
+			<div class="form-group">
+				@* <label for="birthdate">Birthdate</label> *@
+				<input type="date" id="birthdate" class="form-control" asp-for="DOB" placeholder="Birthdate" required onchange="calculateAge()" />
+			</div>
+
+			<div class="form-group">
+				<input type="hidden" asp-for="Age" id="age" />
+				<span asp-validation-for="Age" style="color:red"></span>
+			</div>
+
+
+
+				<br/>
+				<select class="form-control" asp-for="Gender" asp-items="Html.GetEnumSelectList<Hospital.Models.Gender>()" required>
+				<option value="" disabled selected>Gender</option>
+				</select>
+				<span asp-validation-for="Gender" style="color:red"></span>
+				<br />
+				
+			
+			
+
+
+			<input type="text" asp-for="PhoneNumber" placeholder="Phone Number" required="">
+			<span asp-validation-for="PhoneNumber" style="color:red"></span>
+			<br />
+
+
+			<input type="email" asp-for="Email" placeholder="Email" required="">
+			<span asp-validation-for="Email" style="color:red"></span>
+			<br />
+
+
+		
+			<input type="password" asp-for="Password" placeholder="Password" required="">
+			<span asp-validation-for="Password" style="color:red"></span>
+			<br />
+
+
+			<input type="password" asp-for="ConfirmPassword" placeholder="Confirm Password" required="">
+			<span asp-validation-for="ConfirmPassword" style="color:red"></span>
+			<br />
+
+
+			<div class="wthree-text">
+				<label class="anim">
+					<input asp-for="Agree" class="checkbox" required/>
+					<span>I Agree To The Terms & Conditions</span>
+				</label>
+				<span asp-validation-for="Agree" class="text-danger"></span>
+				<div class="clear"> </div>
+			</div>
+
+
+
+			<input type="submit" value="REGISTER">
+		</form>
+		<p>Do you have an Account? <a asp-action="ChooseRole"  asp-controller="Home">Login Now</a></p>
+
+	</div>
+</div>
+
+@section ValidationScriptSection
+{
+	<partial name="_ValidationScriptsPartial" />
+}
+@* render the jquery script defined in the _validationScriptPartial *@
+@* allow you to apply the client-side validations you made in the RegisterViewModel,, that you used here in the span *@
+
+
+
+<script>
+	function setMaxDate() {
+		const today = new Date();
+		const maxDate = today.toISOString().split("T")[0]; // Format: YYYY-MM-DD
+		document.getElementById("birthdate").setAttribute("max", maxDate);
+	}
+
+	function calculateAge() {
+		const birthdate = document.getElementById("birthdate").value;
+		if (birthdate) {
+			const birthDateObj = new Date(birthdate);
+			const today = new Date();
+			let age = today.getFullYear() - birthDateObj.getFullYear();
+			const monthDifference = today.getMonth() - birthDateObj.getMonth();
+
+			// Adjust age if birth month hasn't occurred yet this year
+			if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDateObj.getDate())) {
+				age--;
+			}
+			document.getElementById("age").value = age;
+		}
+	}
+
+	// Call setMaxDate when the script loads to set the initial max date
+	document.addEventListener("DOMContentLoaded", setMaxDate);
+</script>
